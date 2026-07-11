@@ -1,8 +1,8 @@
-package api.poja.app.service.event;
+package api.sikra.app.service.event;
 
-import api.poja.app.endpoint.event.model.SendEmailRequested;
-import api.poja.app.mail.Email;
-import api.poja.app.mail.Mailer;
+import api.sikra.app.endpoint.event.model.SendEmailRequested;
+import api.sikra.app.mail.Email;
+import api.sikra.app.mail.Mailer;
 import jakarta.mail.internet.InternetAddress;
 import java.util.List;
 import java.util.function.Consumer;

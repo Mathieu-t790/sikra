@@ -1,7 +1,5 @@
-package api.poja.app.endpoint.event.model;
+package api.sikra.app.endpoint.event.model;
 
-import api.poja.app.PojaGenerated;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,20 +8,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@PojaGenerated
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class UuidCreated extends PojaEvent {
-  @JsonProperty("uuid")
-  private String uuid;
+public class SendEmailRequested extends PojaEvent {
+  private String to;
 
   @Override
   public Duration maxConsumerDuration() {
-    return Duration.ofSeconds(10);
+    return Duration.ofSeconds(45);
   }
 
   @Override

@@ -1,7 +1,7 @@
-package api.poja.app.endpoint.rest.controller;
+package api.sikra.app.endpoint.rest.controller;
 
-import api.poja.app.endpoint.event.EventProducer;
-import api.poja.app.endpoint.event.model.SendEmailRequested;
+import api.sikra.app.endpoint.event.EventProducer;
+import api.sikra.app.endpoint.event.model.SendEmailRequested;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
