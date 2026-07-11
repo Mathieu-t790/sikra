@@ -25,7 +25,7 @@ repositories {
 }
 
 java {
-    group = 'api.poja.app'
+    group = 'api.sikra.app'
     sourceCompatibility = '21'
     targetCompatibility = '21'
 }
