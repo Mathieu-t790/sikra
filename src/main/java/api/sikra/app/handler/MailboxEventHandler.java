@@ -5,6 +5,7 @@ import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getenv;
 import static java.lang.Thread.currentThread;
 
+import api.sikra.app.PojaApplication;
 import api.sikra.app.PojaGenerated;
 import api.sikra.app.endpoint.EndpointConf;
 import api.sikra.app.endpoint.event.EventConf;
@@ -72,7 +73,7 @@ public class MailboxEventHandler implements RequestHandler<SQSEvent, String> {
   }
 
   private ConfigurableApplicationContext applicationContext(String... args) {
-    SpringApplication application = new SpringApplication(SikraApplication.class);
+    SpringApplication application = new SpringApplication(PojaApplication.class);
     application.setDefaultProperties(
         Map.of(
             "spring.flyway.enabled", "false", "server.port", SPRING_SERVER_PORT_FOR_RANDOM_VALUE));
