@@ -29,5 +29,7 @@ public class JCourse {
   private String title;
 
   private Instant start;
+
+  @Column(name = "\"end\"")
   private Instant end;
 }
