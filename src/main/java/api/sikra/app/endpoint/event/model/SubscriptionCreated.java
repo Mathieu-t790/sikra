@@ -1,5 +1,6 @@
 package api.sikra.app.endpoint.event.model;
 
+import api.sikra.app.model.Subscription;
 import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +15,8 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class SendEmailRequested extends PojaEvent {
-  private String to;
+public class SubscriptionCreated extends PojaEvent {
+  private Subscription subscription;
 
   @Override
   public Duration maxConsumerDuration() {
@@ -24,6 +25,6 @@ public class SendEmailRequested extends PojaEvent {
 
   @Override
   public Duration maxConsumerBackoffBetweenRetries() {
-    return Duration.ofSeconds(30);
+    return Duration.ofSeconds(60);
   }
 }
