@@ -12,9 +12,11 @@ import api.sikra.app.mail.Mailer;
 import api.sikra.app.model.EmailStatus;
 import api.sikra.app.model.Subscription;
 import api.sikra.app.model.SubscriptionStatus;
+import api.sikra.app.repository.CourseRepository;
 import api.sikra.app.repository.EmailHistoryRepository;
 import api.sikra.app.repository.SubscriptionRepository;
 import api.sikra.app.repository.UserRepository;
+import api.sikra.app.repository.model.JCourse;
 import api.sikra.app.repository.model.JEmailHistory;
 import api.sikra.app.repository.model.JSubscription;
 import api.sikra.app.repository.model.JUser;
@@ -34,8 +36,10 @@ class SubscriptionCreatedServiceTest {
 
   @Mock private Mailer mailer;
   @Mock private UserRepository userRepository;
+  @Mock private CourseRepository courseRepository;
   @Mock private SubscriptionRepository subscriptionRepository;
   @Mock private EmailHistoryRepository emailHistoryRepository;
+  @Mock private EmailTemplateService emailTemplateService;
   @Captor private ArgumentCaptor<JEmailHistory> emailHistoryCaptor;
 
   private SubscriptionCreatedService service;
@@ -48,7 +52,12 @@ class SubscriptionCreatedServiceTest {
   void setUp() {
     service =
         new SubscriptionCreatedService(
-            mailer, userRepository, subscriptionRepository, emailHistoryRepository);
+            mailer,
+            userRepository,
+            courseRepository,
+            subscriptionRepository,
+            emailHistoryRepository,
+            emailTemplateService);
   }
 
   @Test
@@ -67,12 +76,19 @@ class SubscriptionCreatedServiceTest {
     userEntity.setUserName("mata");
     userEntity.setEmail("hei.tafita.2@gmail.com");
 
+    var courseEntity = new JCourse();
+    courseEntity.setId(courseId);
+    courseEntity.setTitle("Prog4");
+
     var jSubscription = new JSubscription();
     jSubscription.setId(subscriptionId);
     jSubscription.setStatus(SubscriptionStatus.PENDING);
 
     when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+    when(courseRepository.findById(courseId)).thenReturn(Optional.of(courseEntity));
     when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.of(jSubscription));
+    when(emailTemplateService.renderSubscriptionConfirmation("mata", "Prog4"))
+        .thenReturn("<html><body>Styled email</body></html>");
 
     service.accept(new SubscriptionCreated(subscription));
 
@@ -101,12 +117,19 @@ class SubscriptionCreatedServiceTest {
     userEntity.setUserName("mata");
     userEntity.setEmail("hei.tafita.2@gmail.com");
 
+    var courseEntity = new JCourse();
+    courseEntity.setId(courseId);
+    courseEntity.setTitle("Prog4");
+
     var jSubscription = new JSubscription();
     jSubscription.setId(subscriptionId);
     jSubscription.setStatus(SubscriptionStatus.PENDING);
 
     when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+    when(courseRepository.findById(courseId)).thenReturn(Optional.of(courseEntity));
     when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.of(jSubscription));
+    when(emailTemplateService.renderSubscriptionConfirmation("mata", "Prog4"))
+        .thenReturn("<html><body>Styled email</body></html>");
     doThrow(new RuntimeException("SES error")).when(mailer).accept(any(Email.class));
 
     service.accept(new SubscriptionCreated(subscription));
