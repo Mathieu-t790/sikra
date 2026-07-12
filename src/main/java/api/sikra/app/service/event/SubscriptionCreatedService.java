@@ -74,7 +74,6 @@ public class SubscriptionCreatedService implements Consumer<SubscriptionCreated>
 
   private void saveEmailHistory(
       UUID subscriptionId, String recipient, String subject, EmailStatus status, String error) {
-
     emailHistoryRepository.save(
         JEmailHistory.builder()
             .id(UUID.randomUUID())
