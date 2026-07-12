@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import api.sikra.app.endpoint.event.model.SubscriptionCreated;
 import api.sikra.app.mail.Email;
 import api.sikra.app.mail.Mailer;
 import api.sikra.app.model.EmailStatus;
@@ -17,7 +18,6 @@ import api.sikra.app.repository.UserRepository;
 import api.sikra.app.repository.model.JEmailHistory;
 import api.sikra.app.repository.model.JSubscription;
 import api.sikra.app.repository.model.JUser;
-import api.sikra.app.endpoint.event.model.SubscriptionCreated;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,13 +53,14 @@ class SubscriptionCreatedServiceTest {
 
   @Test
   void should_send_email_and_update_status_when_mailer_succeeds() {
-    var subscription = Subscription.builder()
-        .id(subscriptionId)
-        .userId(userId)
-        .courseId(courseId)
-        .status(SubscriptionStatus.PENDING)
-        .createdAt(Instant.now())
-        .build();
+    var subscription =
+        Subscription.builder()
+            .id(subscriptionId)
+            .userId(userId)
+            .courseId(courseId)
+            .status(SubscriptionStatus.PENDING)
+            .createdAt(Instant.now())
+            .build();
 
     var userEntity = new JUser();
     userEntity.setId(userId);
@@ -86,13 +87,14 @@ class SubscriptionCreatedServiceTest {
 
   @Test
   void should_save_failed_status_when_mailer_throws() {
-    var subscription = Subscription.builder()
-        .id(subscriptionId)
-        .userId(userId)
-        .courseId(courseId)
-        .status(SubscriptionStatus.PENDING)
-        .createdAt(Instant.now())
-        .build();
+    var subscription =
+        Subscription.builder()
+            .id(subscriptionId)
+            .userId(userId)
+            .courseId(courseId)
+            .status(SubscriptionStatus.PENDING)
+            .createdAt(Instant.now())
+            .build();
 
     var userEntity = new JUser();
     userEntity.setId(userId);
