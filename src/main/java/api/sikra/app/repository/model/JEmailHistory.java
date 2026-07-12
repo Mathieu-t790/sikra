@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -27,18 +29,27 @@ import api.sikra.app.model.EmailStatus;
 public class JEmailHistory {
   @Id @GeneratedValue private UUID id;
 
-  @Column(name = "subscription_id")
+  @NotNull
+  @Column(name = "subscription_id", nullable = false)
   private UUID subscriptionId;
 
+  @NotBlank
+  @Column(nullable = false)
   private String recipient;
 
+  @NotBlank
+  @Column(nullable = false)
   private String subject;
 
+  @NotNull
   @Enumerated(STRING)
+  @Column(nullable = false)
   private EmailStatus status;
 
   @Column(columnDefinition = "text")
   private String errorMessage;
 
+  @NotNull
+  @Column(nullable = false)
   private Instant sentAt;
 }

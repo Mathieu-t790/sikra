@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.Setter;
 public class JCourse {
   @Id @GeneratedValue private UUID id;
 
+  @NotBlank
   @Column(nullable = false, unique = true)
   private String title;
 

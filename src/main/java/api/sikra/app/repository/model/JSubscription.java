@@ -2,6 +2,7 @@ package api.sikra.app.repository.model;
 
 import static jakarta.persistence.EnumType.STRING;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -29,16 +31,22 @@ import org.hibernate.annotations.CreationTimestamp;
 public class JSubscription {
   @Id @GeneratedValue private UUID id;
 
-  @CreationTimestamp private Instant createdAt;
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  private Instant createdAt;
 
+  @NotNull
   @Enumerated(STRING)
+  @Column(nullable = false)
   private SubscriptionStatus status;
 
+  @NotNull
   @ManyToOne
-  @JoinColumn(name = "course_id")
+  @JoinColumn(name = "course_id", nullable = false)
   private JCourse course;
 
+  @NotNull
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false)
   private JUser user;
 }
