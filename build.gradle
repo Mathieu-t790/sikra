@@ -39,6 +39,21 @@ configurations {
 
 
 
+tasks.register('fixPojaHandlerImports') {
+    doLast {
+        def handlerDir = file('src/main/java/api/sikra/app/handler')
+        def importLine = 'import api.sikra.app.SikraApplication;'
+        fileTree(handlerDir).include('*.java').each { f ->
+            if (!f.text.contains(importLine)) {
+                f.text = f.text.replace(
+                    'import api.sikra.app.PojaGenerated;',
+                    "import api.sikra.app.PojaGenerated;\n$importLine")
+            }
+        }
+    }
+}
+compileJava.dependsOn fixPojaHandlerImports
+
 test {
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     useJUnitPlatform()
