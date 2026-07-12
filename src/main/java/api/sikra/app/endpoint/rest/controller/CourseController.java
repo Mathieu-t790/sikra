@@ -1,10 +1,10 @@
 package api.sikra.app.endpoint.rest.controller;
 
-import java.util.UUID;
-import lombok.AllArgsConstructor;
 import api.sikra.app.endpoint.rest.controller.dto.SubscriptionRequest;
 import api.sikra.app.endpoint.rest.controller.dto.SubscriptionResponse;
 import api.sikra.app.service.SubscriptionService;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +24,6 @@ public class CourseController {
   @ResponseStatus(HttpStatus.CREATED)
   public SubscriptionResponse subscribe(
       @PathVariable UUID id, @RequestBody SubscriptionRequest request) {
-
     var subscription = subscriptionService.create(id, request.userId());
     return SubscriptionResponse.from(subscription);
   }

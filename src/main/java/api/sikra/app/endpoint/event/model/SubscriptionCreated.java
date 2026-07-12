@@ -1,5 +1,6 @@
 package api.sikra.app.endpoint.event.model;
 
+import api.sikra.app.model.Subscription;
 import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import api.sikra.app.model.Subscription;
 
 @NoArgsConstructor
 @AllArgsConstructor

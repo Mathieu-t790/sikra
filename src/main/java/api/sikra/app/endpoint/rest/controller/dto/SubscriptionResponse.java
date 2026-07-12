@@ -1,9 +1,9 @@
 package api.sikra.app.endpoint.rest.controller.dto;
 
-import java.util.UUID;
-import lombok.Builder;
 import api.sikra.app.model.Subscription;
 import api.sikra.app.model.SubscriptionStatus;
+import java.util.UUID;
+import lombok.Builder;
 
 @Builder
 public record SubscriptionResponse(UUID subscriptionId, SubscriptionStatus status, String message) {

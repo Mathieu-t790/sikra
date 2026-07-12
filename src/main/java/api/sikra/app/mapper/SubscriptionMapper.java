@@ -1,10 +1,10 @@
 package api.sikra.app.mapper;
 
-import org.springframework.stereotype.Component;
 import api.sikra.app.model.Subscription;
 import api.sikra.app.repository.model.JCourse;
 import api.sikra.app.repository.model.JSubscription;
 import api.sikra.app.repository.model.JUser;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SubscriptionMapper {

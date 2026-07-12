@@ -1,12 +1,5 @@
 package api.sikra.app.service.event;
 
-import jakarta.mail.internet.InternetAddress;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import api.sikra.app.endpoint.event.model.SubscriptionCreated;
 import api.sikra.app.mail.Email;
 import api.sikra.app.mail.Mailer;
@@ -17,6 +10,13 @@ import api.sikra.app.repository.SubscriptionRepository;
 import api.sikra.app.repository.UserRepository;
 import api.sikra.app.repository.model.JEmailHistory;
 import api.sikra.app.repository.model.JUser;
+import jakarta.mail.internet.InternetAddress;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,17 +35,18 @@ public class SubscriptionCreatedService implements Consumer<SubscriptionCreated>
     var userId = subscription.userId();
     var courseId = subscription.courseId();
 
-    var userEntity = userRepository
-        .findById(userId)
-        .orElseThrow(() -> new RuntimeException("User not found for subscription"));
+    var userEntity =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found for subscription"));
 
     var to = userEntity.getEmail();
     var subject = "Subscription confirmation";
     var htmlBody = buildEmailBody(userEntity);
 
     try {
-      mailer.accept(new Email(
-          new InternetAddress(to), List.of(), List.of(), subject, htmlBody, List.of()));
+      mailer.accept(
+          new Email(new InternetAddress(to), List.of(), List.of(), subject, htmlBody, List.of()));
 
       saveEmailHistory(subscription.id(), to, subject, EmailStatus.SENT, null);
       updateSubscriptionStatus(subscription.id(), SubscriptionStatus.ACTIVE);
@@ -58,16 +59,16 @@ public class SubscriptionCreatedService implements Consumer<SubscriptionCreated>
 
   private String buildEmailBody(JUser user) {
     return """
-        <html>
-          <body>
-            <p>Dear %s,</p>
-            <p>Your subscription has been confirmed.</p>
-            <p>Thank you for joining us!</p>
-            <p>Best regards,</p>
-            <p>The Team</p>
-          </body>
-        </html>
-        """
+           <html>
+             <body>
+               <p>Dear %s,</p>
+               <p>Your subscription has been confirmed.</p>
+               <p>Thank you for joining us!</p>
+               <p>Best regards,</p>
+               <p>The Team</p>
+             </body>
+           </html>
+           """
         .formatted(user.getUserName());
   }
 
@@ -89,9 +90,10 @@ public class SubscriptionCreatedService implements Consumer<SubscriptionCreated>
   private void updateSubscriptionStatus(UUID subscriptionId, SubscriptionStatus status) {
     subscriptionRepository
         .findById(subscriptionId)
-        .ifPresent(entity -> {
-          entity.setStatus(status);
-          subscriptionRepository.save(entity);
-        });
+        .ifPresent(
+            entity -> {
+              entity.setStatus(status);
+              subscriptionRepository.save(entity);
+            });
   }
 }

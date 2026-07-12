@@ -2,6 +2,7 @@ package api.sikra.app.repository.model;
 
 import static jakarta.persistence.EnumType.STRING;
 
+import api.sikra.app.model.SubscriptionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -18,7 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import api.sikra.app.model.SubscriptionStatus;
 import org.hibernate.annotations.CreationTimestamp;
 
 @AllArgsConstructor
