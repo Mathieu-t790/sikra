@@ -78,8 +78,7 @@ class CourseControllerIT extends FacadeIT {
     var url = "/courses/" + courseId + "/subscribe";
 
     restTemplate.postForEntity(url, request, SubscriptionResponse.class);
-    ResponseEntity<String> response =
-        restTemplate.postForEntity(url, request, String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
     assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
   }
@@ -89,8 +88,7 @@ class CourseControllerIT extends FacadeIT {
     var request = new SubscriptionRequest(UUID.randomUUID());
     var url = "/courses/" + courseId + "/subscribe";
 
-    ResponseEntity<String> response =
-        restTemplate.postForEntity(url, request, String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
@@ -100,8 +98,7 @@ class CourseControllerIT extends FacadeIT {
     var request = new SubscriptionRequest(userId);
     var url = "/courses/" + UUID.randomUUID() + "/subscribe";
 
-    ResponseEntity<String> response =
-        restTemplate.postForEntity(url, request, String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
