@@ -5,11 +5,11 @@ import api.sikra.app.mail.Email;
 import api.sikra.app.mail.Mailer;
 import api.sikra.app.model.EmailStatus;
 import api.sikra.app.model.SubscriptionStatus;
+import api.sikra.app.repository.CourseRepository;
 import api.sikra.app.repository.EmailHistoryRepository;
 import api.sikra.app.repository.SubscriptionRepository;
 import api.sikra.app.repository.UserRepository;
 import api.sikra.app.repository.model.JEmailHistory;
-import api.sikra.app.repository.model.JUser;
 import jakarta.mail.internet.InternetAddress;
 import java.time.Instant;
 import java.util.List;
@@ -25,8 +25,10 @@ public class SubscriptionCreatedService implements Consumer<SubscriptionCreated>
 
   private final Mailer mailer;
   private final UserRepository userRepository;
+  private final CourseRepository courseRepository;
   private final SubscriptionRepository subscriptionRepository;
   private final EmailHistoryRepository emailHistoryRepository;
+  private final EmailTemplateService emailTemplateService;
 
   @Override
   @SneakyThrows
@@ -40,9 +42,16 @@ public class SubscriptionCreatedService implements Consumer<SubscriptionCreated>
             .findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found for subscription"));
 
+    var courseEntity =
+        courseRepository
+            .findById(courseId)
+            .orElseThrow(() -> new RuntimeException("Course not found for subscription"));
+
     var to = userEntity.getEmail();
-    var subject = "Subscription confirmation";
-    var htmlBody = buildEmailBody(userEntity);
+    var subject = "Subscription confirmation - " + courseEntity.getTitle();
+    var htmlBody =
+        emailTemplateService.renderSubscriptionConfirmation(
+            userEntity.getUserName(), courseEntity.getTitle());
 
     try {
       mailer.accept(
@@ -55,21 +64,6 @@ public class SubscriptionCreatedService implements Consumer<SubscriptionCreated>
       saveEmailHistory(subscription.id(), to, subject, EmailStatus.FAILED, e.getMessage());
       updateSubscriptionStatus(subscription.id(), SubscriptionStatus.FAILED);
     }
-  }
-
-  private String buildEmailBody(JUser user) {
-    return """
-           <html>
-             <body>
-               <p>Dear %s,</p>
-               <p>Your subscription has been confirmed.</p>
-               <p>Thank you for joining us!</p>
-               <p>Best regards,</p>
-               <p>The Team</p>
-             </body>
-           </html>
-           """
-        .formatted(user.getUserName());
   }
 
   private void saveEmailHistory(
