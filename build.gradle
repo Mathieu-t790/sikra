@@ -39,24 +39,6 @@ configurations {
 
 
 
-compileJava.doFirst {
-    def handlerDir = file('src/main/java/api/sikra/app/handler')
-    def importLine = 'import api.sikra.app.SikraApplication;'
-    fileTree(handlerDir).include('*.java').each { f ->
-        if (!f.text.contains(importLine)) {
-            if (f.text.contains('import api.sikra.app.PojaGenerated;')) {
-                f.text = f.text.replace(
-                        'import api.sikra.app.PojaGenerated;',
-                        "import api.sikra.app.PojaGenerated;\n$importLine")
-            } else {
-                f.text = f.text.replace(
-                        'package api.sikra.app.handler;',
-                        "package api.sikra.app.handler;\n\n$importLine")
-            }
-        }
-    }
-}
-
 test {
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     useJUnitPlatform()
@@ -128,7 +110,6 @@ jacocoTestReport {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:3.2.2'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     testImplementation 'org.testcontainers:testcontainers:2.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.2'
     implementation 'org.flywaydb:flyway-core:9.22.3'
@@ -157,8 +138,6 @@ dependencies {
     implementation 'com.sun.activation:jakarta.activation:2.0.1'
 
     implementation 'org.apache.tika:tika-core:2.9.1'
-
-    implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
 
     implementation 'org.reflections:reflections:0.10.2'
 
