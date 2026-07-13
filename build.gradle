@@ -37,8 +37,6 @@ configurations {
 }
 
 
-
-
 compileJava.doFirst {
     def handlerDir = file('src/main/java/api/sikra/app/handler')
     def importLine = 'import api.sikra.app.SikraApplication;'
@@ -56,6 +54,8 @@ compileJava.doFirst {
         }
     }
 }
+
+
 
 test {
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
@@ -128,7 +128,6 @@ jacocoTestReport {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:3.2.2'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     testImplementation 'org.testcontainers:testcontainers:2.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.2'
     implementation 'org.flywaydb:flyway-core:9.22.3'
@@ -174,6 +173,7 @@ dependencies {
     testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
 
 implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
 
 implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 }
