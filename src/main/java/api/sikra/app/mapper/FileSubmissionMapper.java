@@ -14,6 +14,7 @@ public class FileSubmissionMapper {
         .fileKey(entity.getFileKey())
         .fileName(entity.getFileName())
         .userId(entity.getUser().getId())
+        .email(entity.getUser().getEmail())
         .createdAt(entity.getCreatedAt())
         .build();
   }

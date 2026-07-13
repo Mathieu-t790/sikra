@@ -89,6 +89,7 @@ class FileSubmissionServiceTest {
             .fileKey("file-submissions/" + submissionId + "/image.jpg")
             .fileName(fileName)
             .userId(userId)
+            .email("john@example.com")
             .createdAt(now)
             .build();
 
@@ -114,11 +115,17 @@ class FileSubmissionServiceTest {
   void getAll_should_return_paginated_submissions() {
     var submissions =
         List.of(
-            FileSubmission.builder().id(UUID.randomUUID()).fileName("a.jpg").userId(userId).build(),
+            FileSubmission.builder()
+                .id(UUID.randomUUID())
+                .fileName("a.jpg")
+                .userId(userId)
+                .email("john@example.com")
+                .build(),
             FileSubmission.builder()
                 .id(UUID.randomUUID())
                 .fileName("b.jpg")
                 .userId(userId)
+                .email("john@example.com")
                 .build());
 
     var entities = List.of(new JFileSubmission(), new JFileSubmission());

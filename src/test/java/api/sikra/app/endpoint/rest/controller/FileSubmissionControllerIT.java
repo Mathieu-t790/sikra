@@ -77,7 +77,7 @@ class FileSubmissionControllerIT extends FacadeIT {
     assertNotNull(response.getBody());
     assertNotNull(response.getBody().id());
     assertEquals("photo.jpg", response.getBody().fileName());
-    assertEquals(USER_ID, response.getBody().userId());
+    assertEquals("john@example.com", response.getBody().email());
     assertNotNull(response.getBody().message());
   }
 

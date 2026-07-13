@@ -6,4 +6,4 @@ import lombok.Builder;
 
 @Builder
 public record FileSubmission(
-    UUID id, String fileKey, String fileName, UUID userId, Instant createdAt) {}
+    UUID id, String fileKey, String fileName, UUID userId, String email, Instant createdAt) {}

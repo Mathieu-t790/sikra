@@ -20,9 +20,9 @@ Upload an image → B&W conversion → S3 storage → confirmation email with do
 Use Tokimahery's user ID: **`77099c25-85ea-4f1d-ad98-69824653ca48`**
 
 ```bash
-curl -s -X POST "https://tuwsea43c7a7ic37l2k62ysmsq0mlxwb.lambda-url.eu-west-3.on.aws/file-submissions" \
-  -F "file=@/path/to/image.jpg" \
-  -F 'request={"userId":"77099c25-85ea-4f1d-ad98-69824653ca48"};type=application/json' | jq .
+curl -X POST "https://tuwsea43c7a7ic37l2k62ysmsq0mlxwb.lambda-url.eu-west-3.on.aws/file-submissions" \
+  -F "file=@./image.jpg" \
+  -F "request={\"userId\":\"77099c25-85ea-4f1d-ad98-69824653ca48\"};type=application/json"
 ```
 
 Expected: `201 Created` with submission JSON.
@@ -30,7 +30,7 @@ Expected: `201 Created` with submission JSON.
 ### 2. GET the list
 
 ```bash
-curl -s "https://tuwsea43c7a7ic37l2k62ysmsq0mlxwb.lambda-url.eu-west-3.on.aws/file-submissions?offset=0&limit=20" | jq .
+curl "https://tuwsea43c7a7ic37l2k62ysmsq0mlxwb.lambda-url.eu-west-3.on.aws/file-submissions?offset=0&limit=20"
 ```
 
 Expected: `200 OK` with paginated list.
