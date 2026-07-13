@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Submission Confirmation</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f7fa;font-family:'Segoe UI',Arial,sans-serif">
+  <table role="presentation" style="width:100%;background-color:#f4f7fa;padding:40px 0">
+    <tr>
+      <td align="center">
+        <table role="presentation" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#475569,#334155);padding:40px 30px;text-align:center">
+              <h1 style="color:#ffffff;font-size:28px;margin:0;font-weight:700">File Submitted Successfully!</h1>
+              <p style="color:rgba(255,255,255,0.85);font-size:16px;margin:12px 0 0">Your image has been received</p>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 30px">
+              <p style="font-size:16px;color:#333;margin:0 0 20px">Dear User,</p>
+              <p style="font-size:15px;color:#555;margin:0 0 24px;line-height:1.6">
+                Your file has been successfully submitted. Here are the details:
+              </p>
+              <!-- Details card -->
+              <table role="presentation" style="width:100%;background-color:#f8fafc;border-radius:8px;padding:20px;margin-bottom:24px">
+                <tr>
+                  <td style="padding:8px 0">
+                    <span style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:0.5px">File Name</span>
+                    <p style="font-size:16px;color:#333;font-weight:600;margin:4px 0 0" th:text="${fileName}">image.jpg</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;border-top:1px solid #e2e8f0">
+                    <span style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:0.5px">Date</span>
+                    <p style="font-size:16px;color:#333;margin:4px 0 0" th:text="${date}">Date</p>
+                  </td>
+                </tr>
+              </table>
+              <!-- Download button -->
+              <table role="presentation" style="width:100%;margin-bottom:24px">
+                <tr>
+                  <td align="center">
+                    <a th:href="${downloadUrl}" style="display:inline-block;background:#475569;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:16px;font-weight:600">
+                      Download my image
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="font-size:15px;color:#555;margin:0 0 4px;line-height:1.6">Best regards,</p>
+              <p style="font-size:15px;color:#475569;font-weight:600;margin:0">The Team</p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f4f7fa;padding:20px 30px;text-align:center">
+              <p style="font-size:13px;color:#999;margin:0">
+                You received this email because you submitted a file.
+                If you have any questions, please contact our support team.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
