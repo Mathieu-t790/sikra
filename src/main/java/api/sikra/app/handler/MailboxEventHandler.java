@@ -5,7 +5,6 @@ import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getenv;
 import static java.lang.Thread.currentThread;
 
-import api.sikra.app.SikraApplication;
 import api.sikra.app.PojaGenerated;
 import api.sikra.app.endpoint.EndpointConf;
 import api.sikra.app.endpoint.event.EventConf;

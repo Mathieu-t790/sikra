@@ -1,6 +1,5 @@
 package api.sikra.app.handler;
 
-import api.sikra.app.SikraApplication;
 import api.sikra.app.PojaGenerated;
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
