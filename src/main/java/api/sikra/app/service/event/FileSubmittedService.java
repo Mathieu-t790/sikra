@@ -5,7 +5,6 @@ import api.sikra.app.file.bucket.BucketComponent;
 import api.sikra.app.mail.Email;
 import api.sikra.app.mail.Mailer;
 import api.sikra.app.repository.FileSubmissionRepository;
-import api.sikra.app.repository.model.JFileSubmission;
 import jakarta.mail.internet.InternetAddress;
 import java.time.Duration;
 import java.util.List;
@@ -29,7 +28,8 @@ public class FileSubmittedService implements Consumer<FileSubmitted> {
     var entity =
         repository
             .findById(event.getSubmissionId())
-            .orElseThrow(() -> new RuntimeException("Submission not found: " + event.getSubmissionId()));
+            .orElseThrow(
+                () -> new RuntimeException("Submission not found: " + event.getSubmissionId()));
 
     var downloadUrl = bucketComponent.presign(entity.getFileKey(), Duration.ofDays(7));
 

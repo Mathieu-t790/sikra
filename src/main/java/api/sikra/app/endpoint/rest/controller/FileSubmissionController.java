@@ -23,9 +23,7 @@ public class FileSubmissionController {
 
   @GetMapping
   public List<FileSubmissionResponse> getAll() {
-    return fileSubmissionService.getAll().stream()
-        .map(FileSubmissionResponse::from)
-        .toList();
+    return fileSubmissionService.getAll().stream().map(FileSubmissionResponse::from).toList();
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
