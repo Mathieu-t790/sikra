@@ -44,8 +44,7 @@ class FileSubmissionServiceTest {
 
   @BeforeEach
   void setUp() {
-    service =
-        new FileSubmissionService(repository, mapper, bucketComponent, eventProducer);
+    service = new FileSubmissionService(repository, mapper, bucketComponent, eventProducer);
   }
 
   @Test
@@ -84,7 +83,10 @@ class FileSubmissionServiceTest {
     assertNotNull(result);
     assertEquals(fileName, result.fileName());
     assertEquals(email, result.email());
-    verify(bucketComponent).upload(any(java.io.File.class), argThat(key -> key.startsWith("file-submissions/") && key.endsWith("/image.jpg")));
+    verify(bucketComponent)
+        .upload(
+            any(java.io.File.class),
+            argThat(key -> key.startsWith("file-submissions/") && key.endsWith("/image.jpg")));
     verify(eventProducer).accept(eventCaptor.capture());
     assertEquals(1, eventCaptor.getValue().size());
     assertEquals(submissionId, eventCaptor.getValue().get(0).getSubmissionId());
@@ -92,9 +94,18 @@ class FileSubmissionServiceTest {
 
   @Test
   void getAll_should_return_all_submissions() {
-    var submissions = List.of(
-        FileSubmission.builder().id(UUID.randomUUID()).fileName("a.jpg").email("a@a.com").build(),
-        FileSubmission.builder().id(UUID.randomUUID()).fileName("b.jpg").email("b@b.com").build());
+    var submissions =
+        List.of(
+            FileSubmission.builder()
+                .id(UUID.randomUUID())
+                .fileName("a.jpg")
+                .email("a@a.com")
+                .build(),
+            FileSubmission.builder()
+                .id(UUID.randomUUID())
+                .fileName("b.jpg")
+                .email("b@b.com")
+                .build());
 
     var entities = List.of(new JFileSubmission(), new JFileSubmission());
 

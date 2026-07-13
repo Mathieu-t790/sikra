@@ -15,7 +15,6 @@ import api.sikra.app.file.hash.FileHash;
 import api.sikra.app.file.hash.FileHashAlgorithm;
 import api.sikra.app.repository.FileSubmissionRepository;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +43,8 @@ class FileSubmissionControllerIT extends FacadeIT {
   @BeforeEach
   void setUp() {
     doNothing().when(eventProducer).accept(any());
-    when(bucketComponent.upload(any(), any())).thenReturn(new FileHash(FileHashAlgorithm.NONE, null));
+    when(bucketComponent.upload(any(), any()))
+        .thenReturn(new FileHash(FileHashAlgorithm.NONE, null));
     repository.deleteAll();
   }
 
@@ -87,12 +87,13 @@ class FileSubmissionControllerIT extends FacadeIT {
     var headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-    var fileResource = new ByteArrayResource(imageBytes) {
-      @Override
-      public String getFilename() {
-        return fileName;
-      }
-    };
+    var fileResource =
+        new ByteArrayResource(imageBytes) {
+          @Override
+          public String getFilename() {
+            return fileName;
+          }
+        };
 
     var body = new LinkedMultiValueMap<String, Object>();
     body.add("file", fileResource);

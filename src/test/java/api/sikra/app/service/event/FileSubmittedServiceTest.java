@@ -35,8 +35,7 @@ class FileSubmittedServiceTest {
 
   @BeforeEach
   void setUp() {
-    service =
-        new FileSubmittedService(repository, bucketComponent, mailer, emailTemplateService);
+    service = new FileSubmittedService(repository, bucketComponent, mailer, emailTemplateService);
   }
 
   @Test
@@ -50,8 +49,7 @@ class FileSubmittedServiceTest {
     var downloadUrl = new URL("https://bucket.example.com/key");
 
     when(repository.findById(submissionId)).thenReturn(Optional.of(entity));
-    when(bucketComponent.presign(entity.getFileKey(), Duration.ofDays(7)))
-        .thenReturn(downloadUrl);
+    when(bucketComponent.presign(entity.getFileKey(), Duration.ofDays(7))).thenReturn(downloadUrl);
     when(emailTemplateService.renderFileSubmissionConfirmation("test.jpg", downloadUrl.toString()))
         .thenReturn("<html><body>Email body</body></html>");
 
