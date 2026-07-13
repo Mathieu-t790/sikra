@@ -2,6 +2,7 @@ package api.sikra.app.mapper;
 
 import api.sikra.app.model.FileSubmission;
 import api.sikra.app.repository.model.JFileSubmission;
+import api.sikra.app.repository.model.JUser;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,17 +13,17 @@ public class FileSubmissionMapper {
         .id(entity.getId())
         .fileKey(entity.getFileKey())
         .fileName(entity.getFileName())
-        .email(entity.getEmail())
+        .userId(entity.getUser().getId())
         .createdAt(entity.getCreatedAt())
         .build();
   }
 
-  public JFileSubmission toEntity(FileSubmission model) {
+  public JFileSubmission toEntity(FileSubmission model, JUser userEntity) {
     return JFileSubmission.builder()
         .id(model.id())
         .fileKey(model.fileKey())
         .fileName(model.fileName())
-        .email(model.email())
+        .user(userEntity)
         .createdAt(model.createdAt())
         .build();
   }
