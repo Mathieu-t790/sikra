@@ -155,6 +155,7 @@ dependencies {
 
     implementation 'org.apache.tika:tika-core:2.9.1'
 
+    implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
     implementation 'org.reflections:reflections:0.10.2'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
