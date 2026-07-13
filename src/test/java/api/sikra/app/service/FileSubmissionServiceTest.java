@@ -31,9 +31,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,18 +49,20 @@ class FileSubmissionServiceTest {
   private FileSubmissionService service;
 
   private final UUID userId = UUID.randomUUID();
-  private final JUser jUser = JUser.builder()
-      .id(userId)
-      .firstName("John")
-      .lastName("Doe")
-      .userName("jdoe")
-      .email("john@example.com")
-      .build();
+  private final JUser jUser =
+      JUser.builder()
+          .id(userId)
+          .firstName("John")
+          .lastName("Doe")
+          .userName("jdoe")
+          .email("john@example.com")
+          .build();
 
   @BeforeEach
   void setUp() {
     service =
-        new FileSubmissionService(repository, mapper, bucketComponent, eventProducer, userRepository);
+        new FileSubmissionService(
+            repository, mapper, bucketComponent, eventProducer, userRepository);
   }
 
   @Test
@@ -113,11 +114,7 @@ class FileSubmissionServiceTest {
   void getAll_should_return_paginated_submissions() {
     var submissions =
         List.of(
-            FileSubmission.builder()
-                .id(UUID.randomUUID())
-                .fileName("a.jpg")
-                .userId(userId)
-                .build(),
+            FileSubmission.builder().id(UUID.randomUUID()).fileName("a.jpg").userId(userId).build(),
             FileSubmission.builder()
                 .id(UUID.randomUUID())
                 .fileName("b.jpg")
@@ -125,10 +122,10 @@ class FileSubmissionServiceTest {
                 .build());
 
     var entities = List.of(new JFileSubmission(), new JFileSubmission());
-    var pageable = PageRequest.of(0, 10);
-    var page = new PageImpl<>(entities, pageable, 2);
+    var pageable = Pageable.ofSize(10);
+    var page = new PageImpl<>(entities, pageable.withPage(0), 2);
 
-    when(repository.findAll(pageable)).thenReturn(page);
+    when(repository.findAll(any(Pageable.class))).thenReturn(page);
     when(mapper.toModel(entities.get(0))).thenReturn(submissions.get(0));
     when(mapper.toModel(entities.get(1))).thenReturn(submissions.get(1));
 

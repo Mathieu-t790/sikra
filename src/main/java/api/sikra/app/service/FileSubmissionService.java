@@ -48,7 +48,8 @@ public class FileSubmissionService {
 
     uploadToBucket(tempFile, bucketKey);
 
-    var submission = buildSubmission(submissionId, bucketKey, multipartFile.getOriginalFilename(), userId);
+    var submission =
+        buildSubmission(submissionId, bucketKey, multipartFile.getOriginalFilename(), userId);
     var saved = mapper.toModel(repository.save(mapper.toEntity(submission, userEntity)));
 
     eventProducer.accept(List.of(new FileSubmitted(saved.id())));
@@ -77,8 +78,7 @@ public class FileSubmissionService {
     file.delete();
   }
 
-  private FileSubmission buildSubmission(
-      UUID id, String bucketKey, String fileName, UUID userId) {
+  private FileSubmission buildSubmission(UUID id, String bucketKey, String fileName, UUID userId) {
     return FileSubmission.builder()
         .id(id)
         .fileKey(bucketKey)
@@ -89,8 +89,7 @@ public class FileSubmissionService {
   }
 
   public Page<FileSubmission> getAll(int offset, int limit) {
-    var pageable =
-        PageRequest.of(offset / limit, limit, Sort.Direction.DESC, "createdAt");
+    var pageable = PageRequest.of(offset / limit, limit, Sort.Direction.DESC, "createdAt");
     return repository.findAll(pageable).map(mapper::toModel);
   }
 }

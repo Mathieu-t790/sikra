@@ -15,11 +15,9 @@ import api.sikra.app.file.bucket.BucketComponent;
 import api.sikra.app.file.hash.FileHash;
 import api.sikra.app.file.hash.FileHashAlgorithm;
 import api.sikra.app.repository.FileSubmissionRepository;
-import api.sikra.app.repository.UserRepository;
-import api.sikra.app.repository.model.JUser;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +33,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -41,10 +41,10 @@ class FileSubmissionControllerIT extends FacadeIT {
 
   @Autowired private TestRestTemplate restTemplate;
   @Autowired private FileSubmissionRepository repository;
+  @Autowired private JdbcTemplate jdbcTemplate;
 
   @MockBean private EventProducer<FileSubmitted> eventProducer;
   @MockBean private BucketComponent bucketComponent;
-  @MockBean private UserRepository userRepository;
 
   private static final UUID USER_ID = UUID.randomUUID();
 
@@ -53,17 +53,15 @@ class FileSubmissionControllerIT extends FacadeIT {
     doNothing().when(eventProducer).accept(any());
     when(bucketComponent.upload(any(), any()))
         .thenReturn(new FileHash(FileHashAlgorithm.NONE, null));
-    when(userRepository.findById(USER_ID))
-        .thenReturn(
-            Optional.of(
-                JUser.builder()
-                    .id(USER_ID)
-                    .firstName("John")
-                    .lastName("Doe")
-                    .userName("jdoe")
-                    .email("john@example.com")
-                    .build()));
     repository.deleteAll();
+    jdbcTemplate.update("delete from \"user\"");
+    jdbcTemplate.update(
+        "insert into \"user\" (id, first_name, last_name, user_name, email) values (?, ?, ?, ?, ?)",
+        USER_ID,
+        "John",
+        "Doe",
+        "jdoe",
+        "john@example.com");
   }
 
   @Test
@@ -87,19 +85,25 @@ class FileSubmissionControllerIT extends FacadeIT {
   void get_should_return_paginated_list() throws Exception {
     var imageBytes = createMinimalJpegBytes();
 
-    // Create a submission first
-    var body = createMultipartBody(imageBytes, "test.jpg", USER_ID);
-    restTemplate.exchange("/file-submissions", HttpMethod.POST, body, FileSubmissionResponse.class);
+    var postBody = createMultipartBody(imageBytes, "test.jpg", USER_ID);
+    restTemplate.exchange(
+        "/file-submissions", HttpMethod.POST, postBody, FileSubmissionResponse.class);
 
-    var response =
-        restTemplate.getForEntity(
-            "/file-submissions?offset=0&limit=20", FileSubmissionResponse[].class);
+    ResponseEntity<PageResponse> response =
+        restTemplate.exchange(
+            "/file-submissions?offset=0&limit=20",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<PageResponse>() {});
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertThat(response.getBody()).hasSize(1);
-    assertEquals("test.jpg", response.getBody()[0].fileName());
+    assertThat(response.getBody().content()).hasSize(1);
+    assertEquals("test.jpg", response.getBody().content().get(0).fileName());
+    assertEquals(1, response.getBody().totalElements());
   }
+
+  private record PageResponse(List<FileSubmissionResponse> content, long totalElements) {}
 
   private HttpEntity<MultiValueMap<String, Object>> createMultipartBody(
       byte[] imageBytes, String fileName, UUID userId) {
@@ -115,17 +119,13 @@ class FileSubmissionControllerIT extends FacadeIT {
         };
 
     var requestJson = "{\"userId\":\"" + userId + "\"}";
-    var requestResource =
-        new ByteArrayResource(requestJson.getBytes()) {
-          @Override
-          public String getFilename() {
-            return "request.json";
-          }
-        };
+    var requestHeaders = new HttpHeaders();
+    requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+    var requestEntity = new HttpEntity<>(requestJson, requestHeaders);
 
     var body = new LinkedMultiValueMap<String, Object>();
     body.add("file", fileResource);
-    body.add("request", requestResource);
+    body.add("request", requestEntity);
 
     return new HttpEntity<>(body, headers);
   }

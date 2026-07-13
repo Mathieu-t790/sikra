@@ -79,6 +79,7 @@ class FileSubmittedServiceTest {
   void accept_should_throw_when_submission_not_found() {
     when(repository.findById(submissionId)).thenReturn(Optional.empty());
 
-    assertThrows(EntityNotFoundException.class, () -> service.accept(new FileSubmitted(submissionId)));
+    assertThrows(
+        EntityNotFoundException.class, () -> service.accept(new FileSubmitted(submissionId)));
   }
 }

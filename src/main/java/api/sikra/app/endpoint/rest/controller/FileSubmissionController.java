@@ -25,8 +25,7 @@ public class FileSubmissionController {
 
   @GetMapping
   public Page<FileSubmissionResponse> getAll(
-      @RequestParam(defaultValue = "0") int offset,
-      @RequestParam(defaultValue = "20") int limit) {
+      @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "20") int limit) {
     return fileSubmissionService.getAll(offset, limit).map(FileSubmissionResponse::from);
   }
 

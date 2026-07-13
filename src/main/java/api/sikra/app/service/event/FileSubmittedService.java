@@ -10,6 +10,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -34,8 +35,9 @@ public class FileSubmittedService implements Consumer<FileSubmitted> {
         repository
             .findById(event.getSubmissionId())
             .orElseThrow(
-                () -> new EntityNotFoundException(
-                    "Submission not found: " + event.getSubmissionId()));
+                () ->
+                    new EntityNotFoundException(
+                        "Submission not found: " + event.getSubmissionId()));
 
     var userEmail = resolveUserEmail(entity.getUser().getId());
     var downloadUrl = bucketComponent.presign(entity.getFileKey(), Duration.ofDays(7));
@@ -47,12 +49,7 @@ public class FileSubmittedService implements Consumer<FileSubmitted> {
 
     mailer.accept(
         new Email(
-            new InternetAddress(userEmail),
-            List.of(),
-            List.of(),
-            subject,
-            htmlBody,
-            List.of()));
+            new InternetAddress(userEmail), List.of(), List.of(), subject, htmlBody, List.of()));
   }
 
   private String resolveUserEmail(UUID userId) {
