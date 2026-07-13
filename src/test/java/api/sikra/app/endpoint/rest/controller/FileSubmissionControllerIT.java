@@ -1,5 +1,6 @@
 package api.sikra.app.endpoint.rest.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,8 +15,12 @@ import api.sikra.app.file.bucket.BucketComponent;
 import api.sikra.app.file.hash.FileHash;
 import api.sikra.app.file.hash.FileHashAlgorithm;
 import api.sikra.app.repository.FileSubmissionRepository;
+import api.sikra.app.repository.UserRepository;
+import api.sikra.app.repository.model.JUser;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.Optional;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,19 +44,32 @@ class FileSubmissionControllerIT extends FacadeIT {
 
   @MockBean private EventProducer<FileSubmitted> eventProducer;
   @MockBean private BucketComponent bucketComponent;
+  @MockBean private UserRepository userRepository;
+
+  private static final UUID USER_ID = UUID.randomUUID();
 
   @BeforeEach
   void setUp() {
     doNothing().when(eventProducer).accept(any());
     when(bucketComponent.upload(any(), any()))
         .thenReturn(new FileHash(FileHashAlgorithm.NONE, null));
+    when(userRepository.findById(USER_ID))
+        .thenReturn(
+            Optional.of(
+                JUser.builder()
+                    .id(USER_ID)
+                    .firstName("John")
+                    .lastName("Doe")
+                    .userName("jdoe")
+                    .email("john@example.com")
+                    .build()));
     repository.deleteAll();
   }
 
   @Test
   void post_should_return_created() throws Exception {
     var imageBytes = createMinimalJpegBytes();
-    var body = createMultipartBody(imageBytes, "photo.jpg", "test@example.com");
+    var body = createMultipartBody(imageBytes, "photo.jpg", USER_ID);
 
     ResponseEntity<FileSubmissionResponse> response =
         restTemplate.exchange(
@@ -61,29 +79,30 @@ class FileSubmissionControllerIT extends FacadeIT {
     assertNotNull(response.getBody());
     assertNotNull(response.getBody().id());
     assertEquals("photo.jpg", response.getBody().fileName());
-    assertEquals("test@example.com", response.getBody().email());
+    assertEquals(USER_ID, response.getBody().userId());
     assertNotNull(response.getBody().message());
   }
 
   @Test
-  void get_should_return_list() throws Exception {
+  void get_should_return_paginated_list() throws Exception {
     var imageBytes = createMinimalJpegBytes();
 
     // Create a submission first
-    var body = createMultipartBody(imageBytes, "test.jpg", "test@example.com");
+    var body = createMultipartBody(imageBytes, "test.jpg", USER_ID);
     restTemplate.exchange("/file-submissions", HttpMethod.POST, body, FileSubmissionResponse.class);
 
-    ResponseEntity<FileSubmissionResponse[]> response =
-        restTemplate.getForEntity("/file-submissions", FileSubmissionResponse[].class);
+    var response =
+        restTemplate.getForEntity(
+            "/file-submissions?offset=0&limit=20", FileSubmissionResponse[].class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertEquals(1, response.getBody().length);
+    assertThat(response.getBody()).hasSize(1);
     assertEquals("test.jpg", response.getBody()[0].fileName());
   }
 
   private HttpEntity<MultiValueMap<String, Object>> createMultipartBody(
-      byte[] imageBytes, String fileName, String email) {
+      byte[] imageBytes, String fileName, UUID userId) {
     var headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -95,9 +114,18 @@ class FileSubmissionControllerIT extends FacadeIT {
           }
         };
 
+    var requestJson = "{\"userId\":\"" + userId + "\"}";
+    var requestResource =
+        new ByteArrayResource(requestJson.getBytes()) {
+          @Override
+          public String getFilename() {
+            return "request.json";
+          }
+        };
+
     var body = new LinkedMultiValueMap<String, Object>();
     body.add("file", fileResource);
-    body.add("email", email);
+    body.add("request", requestResource);
 
     return new HttpEntity<>(body, headers);
   }
