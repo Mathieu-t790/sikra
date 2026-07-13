@@ -7,13 +7,13 @@ import lombok.Builder;
 
 @Builder
 public record FileSubmissionResponse(
-    UUID id, String fileName, String email, Instant createdAt, String message) {
+    UUID id, String fileName, UUID userId, Instant createdAt, String message) {
 
   public static FileSubmissionResponse from(FileSubmission submission) {
     return FileSubmissionResponse.builder()
         .id(submission.id())
         .fileName(submission.fileName())
-        .email(submission.email())
+        .userId(submission.userId())
         .createdAt(submission.createdAt())
         .build();
   }
@@ -22,7 +22,7 @@ public record FileSubmissionResponse(
     return FileSubmissionResponse.builder()
         .id(submission.id())
         .fileName(submission.fileName())
-        .email(submission.email())
+        .userId(submission.userId())
         .createdAt(submission.createdAt())
         .message(message)
         .build();
