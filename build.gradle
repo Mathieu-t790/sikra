@@ -38,23 +38,6 @@ configurations {
 
 
 
-compileJava.doFirst {
-    def handlerDir = file('src/main/java/api/sikra/app/handler')
-    def importLine = 'import api.sikra.app.SikraApplication;'
-    fileTree(handlerDir).include('*.java').each { f ->
-        if (!f.text.contains(importLine)) {
-            if (f.text.contains('import api.sikra.app.PojaGenerated;')) {
-                f.text = f.text.replace(
-                        'import api.sikra.app.PojaGenerated;',
-                        "import api.sikra.app.PojaGenerated;\n$importLine")
-            } else {
-                f.text = f.text.replace(
-                        'package api.sikra.app.handler;',
-                        "package api.sikra.app.handler;\n\n$importLine")
-            }
-        }
-    }
-}
 
 test {
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1

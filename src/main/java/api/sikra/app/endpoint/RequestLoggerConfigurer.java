@@ -43,16 +43,11 @@ public class RequestLoggerConfigurer implements WebMvcConfigurer {
       String oldThreadName = current.getName();
       request.setAttribute(THREAD_OLD_NAME, oldThreadName);
       renameFrontalThread(current);
-      String parameters;
 
-      try {
-        parameters =
-            request.getParameterMap().entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + String.join(",", entry.getValue()))
-                .collect(joining(";"));
-      } catch (NullPointerException e) {
-        parameters = "";
-      }
+      String parameters =
+          request.getParameterMap().entrySet().stream()
+              .map(entry -> entry.getKey() + "=" + String.join(",", entry.getValue()))
+              .collect(joining(";"));
       log.info(
           "preHandle: " + "method={}, uri={}, parameters=[{}], " + "handler={}, oldThreadName={}",
           request.getMethod(),
